@@ -1,22 +1,31 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import IconX from '/src/assets/images/png/xicon.png'
-import IconAccaunt from '/src/assets/images/png/image.jpg'
 import { useNavigate } from 'react-router-dom'
-import { useEffect } from 'react'
 import { AppContext } from '../../context/appContext'
+import IconAccaunt from '/src/assets/images/png/image.jpg'
+import axios from 'axios'
 
 const index = () => {
+
+  const { socket, setMembers } = useContext(AppContext)
+
+  socket.off("new-user").on("new-user", (payload) => {
+    console.log(payload)
+    setMembers(payload)
+  });
+
+  const getMembers = async () => {
+    const data = await axios.get("https://my-social-media-0yny.onrender.com/users/users")
+    setMembers(data?.data)
+  }
+
+  useEffect(() => {
+    getMembers()
+  }, [])
 
   const [value, setValue] = useState("")
   const navigate = useNavigate()
   const { members } = useContext(AppContext)
-
-  const [users, setUsers] = useState([])
-
-  useEffect(() => {
-    const getUsers = localStorage.getItem("members")
-    setUsers(JSON.parse(getUsers))
-  }, [])
   return (
     <div className='search'>
       <label htmlFor="search" className='search-label'>
@@ -31,8 +40,8 @@ const index = () => {
       </div>
       <div className="search-box">
         <div className="search-box-inbox">
-          {users ?
-            users.filter(item => item.username.toLowerCase().includes(value.toLowerCase())).map(item => {
+          {members ?
+            members.filter(item => item.username.toLowerCase().includes(value.toLowerCase())).map(item => {
               return (
                 <div key={item?._id} className="search-box-inbox-item" onClick={() => navigate("/message")}>
                   <div className="search-box-inbox-item-img">

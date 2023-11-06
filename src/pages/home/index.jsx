@@ -1,4 +1,5 @@
-import React from 'react'
+import axios from 'axios'
+import React, { useEffect } from 'react'
 import { useState, useContext } from 'react'
 import { AppContext } from '../../context/appContext'
 import MyPicture from '/src/assets/images/jpg/my-picture.jpg'
@@ -9,9 +10,19 @@ const index = () => {
   const { socket, setMembers } = useContext(AppContext)
 
   socket.off("new-user").on("new-user", (payload) => {
-    localStorage.setItem("members", JSON.stringify(payload))
-    // setMembers(payload)
+    console.log(payload)
+    setMembers(payload)
   });
+
+  // const getMembers = async () => {
+  //   const data = await axios.get("https://my-social-media-0yny.onrender.com/users/users")
+  //   setMembers(data?.data)
+  // }
+
+  // useEffect(() => {
+  //   console.log("useEffect ishladi")
+  //   getMembers()
+  // }, [])
 
   return (
     <div className='home'>

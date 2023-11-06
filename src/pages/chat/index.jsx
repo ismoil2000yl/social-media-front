@@ -6,21 +6,29 @@ import IconX from '/src/assets/images/png/xicon.png'
 import { useNavigate } from 'react-router-dom'
 import { addNotifications, resetNotifications } from '/src/features/userSlice'
 import { useDispatch, useSelector } from 'react-redux'
+import axios from 'axios'
 
 const index = () => {
 
-  const [value, setValue] = useState("")
-  const user = useSelector(state => state.user)
-  const { socket, setPrivateMemberMsg, setCurrentRoom, currentRoom } = useContext(AppContext)
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const { socket, setMembers, setPrivateMemberMsg, setCurrentRoom, currentRoom, members } = useContext(AppContext)
 
-  const [users, setUsers] = useState([])
+  socket.off("new-user").on("new-user", (payload) => {
+    setMembers(payload)
+  });
+
+  const getMembers = async () => {
+    const data = await axios.get("https://my-social-media-0yny.onrender.com/users/users")
+    setMembers(data?.data)
+  }
 
   useEffect(() => {
-    const getUsers = localStorage.getItem("members")
-    setUsers(JSON.parse(getUsers))
+    getMembers()
   }, [])
+
+  const [value, setValue] = useState("")
+  const user = useSelector(state => state.user)
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const joinRoom = (room, isPublic = true) => {
     socket.emit("join-room", room)
@@ -68,10 +76,10 @@ const index = () => {
       </div>
       <div className="search-box">
         <div className="search-box-inbox">
-          {users ?
-            users.filter(member => member.fullname.toLowerCase().includes(value.toLowerCase())).map(member => {
+          {members ?
+            members.filter(member => member.fullname.toLowerCase().includes(value.toLowerCase())).map(member => {
               return (
-                <div div key={member.id} className="search-box-inbox-item" onClick={() => handlePrivateMemberMsg(member)}>
+                <div div key={member?.id} className="search-box-inbox-item" onClick={() => handlePrivateMemberMsg(member)}>
                   <div className="search-box-inbox-item-img">
                     <img src={member?.picture} alt="" />
                     <span className={`${member.status === "Online" ? 'online' : "offline"}`}></span>

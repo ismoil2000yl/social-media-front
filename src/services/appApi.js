@@ -27,12 +27,12 @@ const appApi = createApi({
 
         // Logout
         logoutUser: bulider.mutation({
-            query: (payload) => ({
-                url: "/logout",
-                method: "DELETE",
-                body: payload
+                query: (payload) => ({
+                    url: "/logout",
+                    method: "DELETE",
+                    body: payload
+                })
             })
-        })
     })
 })
 
