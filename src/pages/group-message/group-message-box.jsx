@@ -1,11 +1,9 @@
-import React, { useState } from 'react'
-import { useContext } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
+import Modal from 'react-modal';
 import { AppContext } from '../../context/appContext'
 import { useSelector } from 'react-redux'
 import IconFile from '/src/assets/images/png/file.png'
 import IconSend from '/src/assets/images/png/send.png'
-import { useRef } from 'react'
-import { useEffect } from 'react'
 
 const index = () => {
 
@@ -14,6 +12,7 @@ const index = () => {
     const user = useSelector(state => state.user)
     const { socket, currentRoom, setMessages, messages } = useContext(AppContext)
     const messageEndRef = useRef(null)
+    const [isOpen, setIsOpen] = useState(false)
 
     const [image, setImage] = useState(null)
     const [uploadingImage, setUploadingImage] = useState(false)
@@ -50,6 +49,7 @@ const index = () => {
         else {
             setImage(file)
             setImagePreview(URL.createObjectURL(file))
+            setIsOpen(true)
         }
     }
 
@@ -74,7 +74,7 @@ const index = () => {
     }
 
     async function handleSubmit(e) {
-        if (!message) return;
+        // if (!message) return;
         const picture = await uploadImage(image)
         const today = new Date();
         const minutes = today.getMinutes() < 10 ? "0" + today.getMinutes() : today.getMinutes();
@@ -82,6 +82,13 @@ const index = () => {
         const roomId = currentRoom;
         socket.emit("message-room", roomId, message, user, time, todayDate, picture);
         setMessage("");
+        if (isOpen) {
+            setMessage(" ")
+        }
+        setIsOpen(false)
+        setImage(null)
+        setUploadingImage(false)
+        setImagePreview(false)
     }
 
     const scrollToBottom = () => {
@@ -103,15 +110,15 @@ const index = () => {
                                                 <div key={msgIdx} className={`msg-box-item-${sender.username === user.username ? "me" : "you"}`}>
                                                     <div className={`msg-box-item-${sender.username === user.username ? "me" : "you"}-info`}>
                                                         {
-                                                            content ?
-                                                                <p className={`msg-box-item-${sender.username === user.username ? "me" : "you"}-info-text`}>{content}</p> : null
-                                                        }
-                                                        {
                                                             picture ?
                                                                 <div className={`msg-box-item-${sender.username === user.username ? "me" : "you"}-info-img`}>
                                                                     <img src={picture} alt="" />
                                                                 </div>
                                                                 : null
+                                                        }
+                                                        {
+                                                            content ?
+                                                                <p className={`msg-box-item-${sender.username === user.username ? "me" : "you"}-info-text`}>{content}</p> : null
                                                         }
                                                         <span className={`msg-box-item-${sender.username === user.username ? "me" : "you"}-info-data`}>
                                                             {time}
@@ -165,6 +172,32 @@ const index = () => {
                     </button>
                 </div>
             </div>
+            <Modal
+                isOpen={isOpen}
+                onRequestClose={() => setIsOpen(false)}
+                className={"msg-modal"}
+            >
+                <div className='msg-seen' onClick={() => setIsOpen(false)}>
+                    <img src={imagePreview} alt="" />
+                </div>
+                <div className="msg-pc">
+                    <div className="msg-pc-input">
+                        <textarea
+                            className='msg-pc-input-item'
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            onKeyPress={(event) => {
+                                event.key === "Enter" && handleSubmit();
+                            }}
+                        />
+                    </div>
+                    <div className="msg-pc-btn">
+                        <button className='msg-pc-btn-item' onClick={handleSubmit}>
+                            <img src={IconSend} alt="" />
+                        </button>
+                    </div>
+                </div>
+            </Modal>
         </div>
     )
 }
