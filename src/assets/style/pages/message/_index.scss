@@ -66,6 +66,36 @@
                                 color: white;
                             }
 
+                            &-offline {
+                                color: orange !important;
+                                padding-left: 1rem;
+
+                                &-span {
+                                    width: 13px;
+                                    height: 13px;
+                                    border-radius: 50%;
+                                    position: absolute;
+                                    bottom: 2px;
+                                    // right: 50%;
+                                    left: 0;
+                                    animation: span 1.2s ease-in-out infinite;
+                                }
+
+                                @keyframes span {
+                                    0% {
+                                        opacity: 1;
+                                    }
+
+                                    50% {
+                                        opacity: .5;
+                                    }
+
+                                    100% {
+                                        opacity: 1;
+                                    }
+                                }
+                            }
+
                             &-online {
                                 color: green;
                                 padding-left: 1rem;

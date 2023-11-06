@@ -30,8 +30,8 @@ const index = () => {
                             </div>
                             <div className="user-title">
                                 <h3 className="user-title-name">{privateMemberMsg?.username}</h3>
-                                <h5 className='user-title-online'>{privateMemberMsg?.status}
-                                    <span className={`user-title-online-span ${privateMemberMsg?.status ? "online" : "offline"}`}></span>
+                                <h5 className={`user-title-${privateMemberMsg?.status === "Online" ? "online" : "offline"}`}>{privateMemberMsg?.status}
+                                    <span className={`user-title-${privateMemberMsg?.status === "Online" ? "online" : "offline"}-span ${privateMemberMsg?.status === "Online" ? "online" : "offline"}`}></span>
                                 </h5>
                             </div>
                         </div>

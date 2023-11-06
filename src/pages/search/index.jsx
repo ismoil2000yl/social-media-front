@@ -20,7 +20,7 @@ const index = () => {
   return (
     <div className='search'>
       <label htmlFor="search" className='search-label'>
-        <input placeholder='Search...' value={value} className='search-label-input' type="text" id='search' onChange={(e) => setValue(e.target.value)} />
+        <input placeholder='Search...' defaultValue={""} value={value} className='search-label-input' type="text" id='search' onChange={(e) => setValue(e.target.value)} />
         <button className='search-label-x' onClick={() => setValue("")}>
           <img src={IconX} className="search-label-x-img" alt="" />
         </button>
