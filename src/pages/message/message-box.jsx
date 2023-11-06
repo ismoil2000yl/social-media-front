@@ -4,9 +4,6 @@ import { AppContext } from '../../context/appContext'
 import { useSelector } from 'react-redux'
 import IconFile from '/src/assets/images/png/file.png'
 import IconSend from '/src/assets/images/png/send.png'
-import IconUser from '/src/assets/images/png/image.jpg'
-import ImgSend from '/src/assets/images/jpg/page-not-found.jpg'
-import ImgGet from '/src/assets/images/jpg/background-login.jpg'
 
 const index = () => {
 
@@ -42,8 +39,6 @@ const index = () => {
     socket.off("room-messages").on("room-messages", (roomMessages) => {
         setMessages(roomMessages);
     });
-
-    console.log(messages)
 
     const validateImg = (e) => {
         const file = e.target.files[0];
