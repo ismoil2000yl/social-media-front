@@ -18,6 +18,9 @@ const index = () => {
       <div className="home-box">
         <div className="home-box-inbox">
           <img className='home-box-inbox-image' src={MyPicture} alt="" />
+          <h5 className='home-box-inbox-username'>
+            Administrator
+          </h5>
           <h1 className='home-box-inbox-name'>
             Ismoiljon Jalolov
           </h1>
