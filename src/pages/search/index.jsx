@@ -7,7 +7,7 @@ import { AppContext } from '../../context/appContext'
 
 const index = () => {
 
-  const [value, setValue] = useState("ismoil")
+  const [value, setValue] = useState("")
   const navigate = useNavigate()
   const { members } = useContext(AppContext)
 
@@ -34,7 +34,7 @@ const index = () => {
           {users ?
             users.filter(item => item.username.toLowerCase().includes(value.toLowerCase())).map(item => {
               return (
-                <div key={item?._id} className="search-box-inbox-item" onClick={() => navigate("/message/1")}>
+                <div key={item?._id} className="search-box-inbox-item" onClick={() => navigate("/message")}>
                   <div className="search-box-inbox-item-img">
                     <img src={item?.picture} alt="" />
                     <span className='online'></span>

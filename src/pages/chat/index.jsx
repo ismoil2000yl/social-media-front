@@ -50,7 +50,6 @@ const index = () => {
   const handlePrivateMemberMsg = (member) => {
     setPrivateMemberMsg(member)
     const roomId = orderIds(user._id, member._id)
-    console.log(roomId)
     joinRoom(roomId, false)
     navigate("/message")
   }
