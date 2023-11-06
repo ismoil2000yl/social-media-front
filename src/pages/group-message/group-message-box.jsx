@@ -80,7 +80,7 @@ const index = () => {
         const minutes = today.getMinutes() < 10 ? "0" + today.getMinutes() : today.getMinutes();
         const time = today.getHours() + ":" + minutes;
         const roomId = currentRoom;
-        socket.emit("message-room", roomId, message, user, time, todayDate);
+        socket.emit("message-room", roomId, message, user, time, todayDate, picture);
         setMessage("");
     }
 
