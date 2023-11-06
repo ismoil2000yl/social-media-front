@@ -17,7 +17,7 @@ const index = () => {
   const dispatch = useDispatch()
 
   const getRooms = () => {
-    fetch("http://localhost:5001/rooms")
+    fetch("https://my-social-media-0yny.onrender.com/rooms")
       .then((res) => res.json())
       .then((data) => setRooms(data))
   }

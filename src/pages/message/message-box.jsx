@@ -13,7 +13,7 @@ const index = () => {
     const [message, setMessage] = useState("")
     // const [messages, setMessages] = useState([])
     const user = useSelector(state => state.user)
-    const { socket, currentRoom, setMessages, messages } = useContext(AppContext)
+    const { socket, currentRoom, setMessages, messages, privateMemberMsg } = useContext(AppContext)
     const messageEndRef = useRef(null)
 
     useEffect(() => {
