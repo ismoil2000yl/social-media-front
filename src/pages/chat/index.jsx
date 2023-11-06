@@ -43,7 +43,7 @@ const index = () => {
       return id1 + "-" + id2
     }
     else {
-      id2 + "-" + id1
+      return id2 + "-" + id1
     }
   }
 
