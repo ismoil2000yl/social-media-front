@@ -9,20 +9,10 @@ const index = () => {
 
   const { socket, setMembers } = useContext(AppContext)
 
-  socket.off("new-user").on("new-user", (payload) => {
-    console.log(payload)
-    setMembers(payload)
-  });
-
-  // const getMembers = async () => {
-  //   const data = await axios.get("https://my-social-media-0yny.onrender.com/users/users")
-  //   setMembers(data?.data)
-  // }
-
-  // useEffect(() => {
-  //   console.log("useEffect ishladi")
-  //   getMembers()
-  // }, [])
+  // socket.off("new-user").on("new-user", (payload) => {
+  //   console.log(payload)
+  //   setMembers(payload)
+  // });
 
   return (
     <div className='home'>

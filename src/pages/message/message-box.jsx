@@ -16,6 +16,10 @@ const index = () => {
     const { socket, currentRoom, setMessages, messages, privateMemberMsg } = useContext(AppContext)
     const messageEndRef = useRef(null)
 
+    const [image, setImage] = useState(null)
+    const [uploadingImage, setUploadingImage] = useState(false)
+    const [imagePreview, setImagePreview] = useState(null)
+
     useEffect(() => {
         scrollToBottom()
     }, [messages])
@@ -38,14 +42,48 @@ const index = () => {
     socket.off("room-messages").on("room-messages", (roomMessages) => {
         setMessages(roomMessages);
     });
-    function handleSubmit(e) {
-        e.preventDefault();
+
+    console.log(messages)
+
+    const validateImg = (e) => {
+        const file = e.target.files[0];
+        if (file.size > 5048576) {
+            toast.error("Rasm xajmi 5 mb dan kichik bolsin...!")
+        }
+        else {
+            setImage(file)
+            setImagePreview(URL.createObjectURL(file))
+        }
+    }
+
+    const uploadImage = async () => {
+        const data = new FormData();
+        data.append("file", image);
+        data.append('upload_preset', "owyprrzl");
+        try {
+            setUploadingImage(true)
+            let res = await fetch("https://api.cloudinary.com/v1_1/ismoil2000yl/image/upload", {
+                method: "POST",
+                body: data
+            })
+            const urlData = await res.json()
+            setUploadingImage(false)
+            return urlData.url
+        }
+        catch (error) {
+            setUploadingImage(false)
+            console.log(error)
+        }
+    }
+
+    async function handleSubmit(e) {
         if (!message) return;
+        const picture = await uploadImage(image)
         const today = new Date();
         const minutes = today.getMinutes() < 10 ? "0" + today.getMinutes() : today.getMinutes();
         const time = today.getHours() + ":" + minutes;
         const roomId = currentRoom;
-        socket.emit("message-room", roomId, message, user, time, todayDate);
+        socket.emit("message-room", roomId, message, user, time, todayDate, picture);
         setMessage("");
     }
 
@@ -62,19 +100,22 @@ const index = () => {
                             <div key={idx}>
                                 <h4 className='t-c'>{date}</h4>
                                 {
-                                    messagesByDate.map(({ content, time, from: sender }, msgIdx) => {
+                                    messagesByDate.map(({ content, time, from: sender, picture }, msgIdx) => {
                                         return (
                                             <>
                                                 <div key={msgIdx} className={`msg-box-item-${sender.username === user.username ? "me" : "you"}`}>
                                                     <div className={`msg-box-item-${sender.username === user.username ? "me" : "you"}-info`}>
-                                                        <p className={`msg-box-item-${sender.username === user.username ? "me" : "you"}-info-text`}>{content}</p>
-                                                        {/* {
-                                                            item?.image ?
+                                                        {
+                                                            content ?
+                                                                <p className={`msg-box-item-${sender.username === user.username ? "me" : "you"}-info-text`}>{content}</p> : null
+                                                        }
+                                                        {
+                                                            picture ?
                                                                 <div className={`msg-box-item-${sender.username === user.username ? "me" : "you"}-info-img`}>
-                                                                    <img src={item?.image} alt="" />
+                                                                    <img src={picture} alt="" />
                                                                 </div>
                                                                 : null
-                                                        } */}
+                                                        }
                                                         <span className={`msg-box-item-${sender.username === user.username ? "me" : "you"}-info-data`}>
                                                             {time}
                                                         </span>
@@ -96,7 +137,15 @@ const index = () => {
             <div className="msg-group">
                 <div className="msg-group-file">
                     <button className='msg-group-file-item'>
-                        <img src={IconFile} alt="" />
+                        <label htmlFor="file-btn">
+                            <img src={IconFile} alt="" />
+                            <input
+                                type="file"
+                                id='file-btn'
+                                onChange={validateImg}
+                                accept='image/png, image/jpeg, image/jpg'
+                            />
+                        </label>
                     </button>
                 </div>
                 <div className="msg-group-text">
